@@ -23,7 +23,7 @@ class StartWindow(Tk):
 		self.button_explore.pack()
 
 		self.start_button = Button(self, text = 'Start', width = '10', height = '3',
-			command = lambda: self.init_SpectroWindow())
+			command = lambda: (self.make_output(), self.init_SpectroWindow()))
 		self.start_button.pack(pady = 20)
 		self.start_button['state'] = 'disabled'
 
@@ -38,12 +38,14 @@ class StartWindow(Tk):
 			self.start_button['state'] = 'normal'
 			self.folder_label.config(text = self.foldername.split('/')[-1] + ': ' + str(len(self.files)) + ' wav files',
 				background = '#017075')
+		else:
+			self.folder_label.config(text = 'This folder has no wav files', background = '#017075')
 
+	def make_output(self):
+		if self.foldername != '' and len(self.files) > 0:
 			self.output = open(os.path.join(self.foldername, 'syntax_annotations.txt'), 'w')
 			self.output.write('song\tsyntax' + '\n')
 			self.output.close()
-		else:
-			self.folder_label.config(text = 'This folder has no wav files', background = '#017075')
 
 	def init_SpectroWindow(self):
 		# window
