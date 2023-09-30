@@ -1,5 +1,6 @@
 import tkinter.filedialog as fd
 from tkinter import *
+from platform import system
 import os
 from scipy.io import wavfile
 import matplotlib.pyplot as plt
@@ -11,6 +12,12 @@ class StartWindow(Tk):
 		self.title('Syntax Labeler')
 		self.geometry('500x300')
 		self.config(background = '#034c52')
+		if system() == 'Windows':
+			self.icon = PhotoImage(master = self, file = 'logo.ico')
+			self.wm_iconphoto(True, self.icon)
+		else:
+			self.icon = PhotoImage(master = self, file = 'logo.png')
+			self.wm_iconphoto(True, self.icon)
 		self.init_ui()
 		
 	def init_ui(self):
