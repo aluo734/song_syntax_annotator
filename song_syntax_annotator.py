@@ -13,10 +13,10 @@ class StartWindow(Tk):
 		self.geometry('500x300')
 		self.config(background = '#034c52')
 		if system() == 'Windows':
-			self.icon = PhotoImage(master = self, file = 'logo.ico')
+			self.icon = PhotoImage(master = self, file = os.path.join(os.path.realpath(os.path.dirname(__file__)), 'logo.ico'))
 			self.wm_iconphoto(True, self.icon)
 		else:
-			self.icon = PhotoImage(master = self, file = 'logo.png')
+			self.icon = PhotoImage(master = self, file = os.path.join(os.path.realpath(os.path.dirname(__file__)), 'logo.png'))
 			self.wm_iconphoto(True, self.icon)
 		self.init_ui()
 		
