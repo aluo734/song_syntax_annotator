@@ -111,6 +111,7 @@ class StartWindow(Tk):
 
 	def next_song(self):
 		self.spectro_window.recording = self.spectro_window.recording + 1
+		self.spectro_window.syntax_lbl.config(text = '')
 		self.spectro_window.navlabel.next_button['state'] = 'disabled'
 		self.spectro_window.navlabel.back_button['state'] = 'normal'
 		self.spectro_window.entry['state'] = 'normal'
@@ -120,6 +121,7 @@ class StartWindow(Tk):
 
 	def last_song(self):
 		self.spectro_window.recording = self.spectro_window.recording - 1
+		self.spectro_window.syntax_lbl.config(text = '')
 		self.spectro_window.navlabel.next_button['state'] = 'disabled'
 		self.spectro_window.entry['state'] = 'normal'
 		self.spectro_window.oops.config(state = 'disabled')
@@ -142,6 +144,7 @@ class StartWindow(Tk):
 			fp.seek(0)
 			fp.truncate()
 			fp.writelines(lines[0:len(lines) - 1])
+		self.spectro_window.syntax_lbl.config(text = '')
 		self.spectro_window.submit_button['state'] = 'normal'
 		self.spectro_window.entry['state'] = 'normal'
 		self.spectro_window.navlabel.next_button['state'] = 'disabled'
@@ -168,6 +171,7 @@ class StartWindow(Tk):
 
 	def add_new_row(self):
 		self.spectro_window.syntax = list(self.spectro_window.entry.get())
+		self.spectro_window.syntax_lbl.config(text = self.spectro_window.syntax)
 		self.spectro_window.entry.delete(0, END)
 		self.output = open(os.path.join(self.foldername, 'syntax_annotations.txt'), 'a')
 		self.output.write(self.files[self.spectro_window.recording] + '\t' +
@@ -183,7 +187,7 @@ class StartWindow(Tk):
 		if self.spectro_window.recording == len(self.files) - 1:
 			self.spectro_window.done_message = Label(self.spectro_window,
 				text = 'Done! Close Window', background = '#ffc0b4', font = ('Arial', 30))
-			self.spectro_window.done_message.pack(side = 'bottom', pady = 50)
+			self.spectro_window.done_message.place(relx = .5, rely = .5, anchor = 'center')
 
 root = StartWindow()
 root.mainloop()
