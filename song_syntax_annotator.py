@@ -1,9 +1,14 @@
+# pyinstaller --onefile -i logo.ico -w song_syntax_annotator.py -n "Song Syntax Annotator" --hidden-import "babel.numbers"
+
 import tkinter.filedialog as fd
 from tkinter import *
 from platform import system
 import os
 from scipy.io import wavfile
+from scipy import signal
 import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from PIL import ImageTk, Image
 
 class StartWindow(Tk):
@@ -12,12 +17,6 @@ class StartWindow(Tk):
 		self.title('Syntax Labeler')
 		self.geometry('500x300')
 		self.config(background = '#034c52')
-		if system() == 'Windows':
-			self.icon = PhotoImage(master = self, file = os.path.join(os.path.realpath(os.path.dirname(__file__)), 'logo.ico'))
-			self.wm_iconphoto(True, self.icon)
-		else:
-			self.icon = PhotoImage(master = self, file = os.path.join(os.path.realpath(os.path.dirname(__file__)), 'logo.png'))
-			self.wm_iconphoto(True, self.icon)
 		self.init_ui()
 		
 	def init_ui(self):
@@ -58,7 +57,7 @@ class StartWindow(Tk):
 		# window
 		self.spectro_window = Toplevel(self)
 		self.spectro_window.title('Syntax Labeler')
-		self.spectro_window.geometry('600x600')
+		self.spectro_window.geometry('900x600')
 		self.spectro_window.config(background = '#ffc0b4')
 		self.spectro_window.recording = 0
 
@@ -156,15 +155,20 @@ class StartWindow(Tk):
 
 		self.spectro_window.srate, self.spectro_window.sig = wavfile.read(
 			os.path.join(self.foldername, self.files[self.spectro_window.recording]))
-		plt.figure().set_figwidth(10)
-		plt.figure().set_figheight(3)
-		plt.specgram(self.spectro_window.sig, Fs = self.spectro_window.srate, NFFT = 512, noverlap = 384, pad_to = 1024)
-		plt.axis('off')
-		plt.margins(0, 0)
-		plt.savefig('spectrogram.jpeg', bbox_inches = 'tight', pad_inches = 0)
-		plt.close('all')
+		fig, ax1 = plt.subplots(1, figsize=(8, 2))
+		f, t, Sxx = signal.spectrogram(self.spectro_window.sig, self.spectro_window.srate)
+		# plt.specgram(self.spectro_window.sig, Fs = self.spectro_window.srate, NFFT = 512, noverlap = 384, pad_to = 1024)
+		ax1.pcolormesh(t, f, 10 * np.log10(Sxx))
+		ax1.set_ylabel('Frequency [Hz]')
+		ax1.set_xlabel('Time [sec]')
+		ax1.set_title('Spectrogram')
 
-		self.spectro_window.img = ImageTk.PhotoImage(Image.open('spectrogram.jpeg'))
+		canvas = FigureCanvas(fig)
+		canvas.draw()
+		rgba_buffer = canvas.buffer_rgba()
+		
+		pil_image = Image.frombuffer('RGBA', canvas.get_width_height(), rgba_buffer, 'raw', 'RGBA', 0, 1)
+		self.spectro_window.img = ImageTk.PhotoImage(pil_image)
 		self.spectro_window.panel.config(image = self.spectro_window.img)
 
 		self.spectro_window.submit_button['state'] = 'normal'
