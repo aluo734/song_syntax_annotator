@@ -1,4 +1,0 @@
-([('Song Syntax Annotator',
-   '/Users/AmyLuo/Documents/0_Research/1_side_projects/song_syntax_annotation_GUI/song_syntax_annotator/dist/Song '
-   'Syntax Annotator',
-   'EXECUTABLE')],)
